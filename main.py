@@ -14,6 +14,8 @@ import argparse
 from models import *
 from utils import progress_bar
 
+from torchsummary import summary
+
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
@@ -54,21 +56,35 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer',
 
 # Model
 print('==> Building model..')
-# net = VGG('VGG19')
-# net = ResNet18()
-# net = PreActResNet18()
-# net = GoogLeNet()
-# net = DenseNet121()
-# net = ResNeXt29_2x64d()
-# net = MobileNet()
-# net = MobileNetV2()
-# net = DPN92()
-# net = ShuffleNetG2()
-# net = SENet18()
-# net = ShuffleNetV2(1)
-# net = EfficientNetB0()
-# net = RegNetX_200MF()
-net = SimpleDLA()
+
+# net = VGG('VGG19')      20,040,522
+# net = ResNet18()        11,173,962
+# net = PreActResNet18()  11,171,146
+# net = GoogLeNet()        6,166,250
+# net = DenseNet121()      6,956,298
+# net = ResNeXt29_2x64d()  9,128,778
+# net = MobileNet()        3,217,226
+# net = MobileNetV2()      2,296,922
+# net = DPN92()           34,236,634
+# net = ShuffleNetG2()     n/a
+# net = SENet18()         11,260,354
+# net = ShuffleNetV2(1)    1,263,854
+# net = EfficientNetB0()   3,598,598
+# net = RegNetX_200MF()    2,321,946
+# net = SimpleDLA()       15,142,970
+
+
+
+# models = [VGG('VGG19'), ResNet18(), PreActResNet18(), GoogLeNet(), DenseNet121(), ResNeXt29_2x64d(), MobileNet(), MobileNetV2(), DPN92(), SENet18(), ShuffleNetV2(1), EfficientNetB0(), RegNetX_200MF(), SimpleDLA()]
+
+# for model in models:
+#     print(model)
+#     print(summary(model, (3, 32, 32)))
+    
+net = MobileNetV2()
+print(net)
+print(summary(net, (3, 32, 32)))
+
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
