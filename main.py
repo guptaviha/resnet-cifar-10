@@ -15,10 +15,13 @@ from models import *
 from utils import progress_bar
 
 from torchsummary import summary
+import matplotlib.pyplot as plt
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
+parser.add_argument('--epochs', default=200, type=int, help='epochs')
+parser.add_argument('--name', default='mobile_net_1', type=str, help='checkpoint name')
 parser.add_argument('--resume', '-r', action='store_true',
                     help='resume from checkpoint')
 args = parser.parse_args()
@@ -82,8 +85,8 @@ print('==> Building model..')
 #     print(summary(model, (3, 32, 32)))
     
 net = MobileNetV2()
-print(net)
-print(summary(net, (3, 32, 32)))
+# print(net)
+# print(summary(net, (3, 32, 32)))
 
 net = net.to(device)
 if device == 'cuda':
@@ -127,6 +130,7 @@ def train(epoch):
 
         progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
                      % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+    return train_loss/len(trainloader)
 
 
 def test(epoch):
@@ -148,6 +152,7 @@ def test(epoch):
 
             progress_bar(batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
                          % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
+    return test_loss/len(testloader)
 
     # Save checkpoint.
     acc = 100.*correct/total
@@ -164,7 +169,18 @@ def test(epoch):
         best_acc = acc
 
 
-for epoch in range(start_epoch, start_epoch+200):
-    train(epoch)
-    test(epoch)
+    
+train_loss_history = []
+test_loss_history = []
+for epoch in range(start_epoch, start_epoch+args.epochs):
+
+    train_loss = train(epoch)
+    print("train_loss", train_loss)
+    train_loss_history.append(train_loss)
+    print("train_loss_history", train_loss_history)
+    test_loss = test(epoch)
+    print("test_loss", test_loss)
+    test_loss_history.append(test_loss)
+    print("test_loss_history", test_loss_history)
     scheduler.step()
+

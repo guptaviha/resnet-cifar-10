@@ -12,7 +12,7 @@ I'm playing with [PyTorch](http://pytorch.org/) on the CIFAR10 dataset.
 python main.py
 
 # You can manually resume the training with: 
-python main.py --resume --lr=0.01
+python main.py --resume --lr=0.01 --epochs=200
 ```
 
 ## Accuracy
